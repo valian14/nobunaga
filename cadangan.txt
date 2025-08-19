@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { Phone, ShoppingCart, X, Plus, Minus, Edit3, BrainCircuit, Send } from 'lucide-react';
+import { Phone, ShoppingCart, X, Plus, Minus, Edit3, BrainCircuit, Send, Cake, CheckCircle2, User, MapPin, MessageSquare } from 'lucide-react';
 
 // --- DATA MENU ---
 // Data ini bisa Anda pindahkan ke file JSON atau API di kemudian hari
@@ -154,7 +154,6 @@ const customizationOptions = {
             { name: 'Tuna', price: 5000 }, { name: 'Shrimp', price: 6000 },
             { name: 'Octopus', price: 7000 }
         ],
-        // CHANGED: "Spicy" is now a single option inside "extra"
         extra: [
             { name: 'Fried Egg', price: 4000 }, { name: 'Potato Chips', price: 3000 },
             { name: 'Melted Cheese', price: 5000 }, { name: 'Spicy', price: 1000 }
@@ -298,36 +297,66 @@ const Toast = ({ message, show, onHide }) => {
         if (show) {
             const timer = setTimeout(() => {
                 onHide();
-            }, 3000);
+            }, 2500); // Duration of the toast
             return () => clearTimeout(timer);
         }
     }, [show, onHide]);
 
     return (
-        <div className={`fixed top-20 right-5 bg-green-500 text-white py-2 px-4 rounded-lg shadow-lg transition-transform duration-300 ${show ? 'translate-x-0' : 'translate-x-full'}`}>
-            {message}
+        <div className={`fixed top-5 left-1/2 -translate-x-1/2 z-[100] transition-all duration-500 ease-in-out ${show ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'}`}>
+            <div className="flex items-center gap-3 bg-green-600 text-white py-3 px-5 rounded-lg shadow-2xl">
+                <CheckCircle2 size={24} />
+                <span className="font-semibold">{message}</span>
+            </div>
         </div>
     );
 };
 
 // Komponen untuk setiap item menu di halaman utama
 const MenuItem = ({ item, onOrder }) => (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300 flex flex-col">
-        <div className="h-48 w-full">
-            <img className="w-full h-full object-cover" src={item.image} alt={item.name} onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/300x300/cccccc/000000?text=Image+Error'; }} />
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 flex flex-col group">
+        <div className="h-48 w-full overflow-hidden">
+            <img className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src={item.image} alt={item.name} onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/300x300/cccccc/000000?text=Image+Error'; }} />
         </div>
         <div className="p-4 flex flex-col flex-grow">
-            <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
-            <p className="text-gray-600 mt-1">{item.category}</p>
+            <h3 className="text-lg font-bold text-gray-800 truncate">{item.name}</h3>
+            <p className="text-sm text-gray-500 mt-1">{item.category}</p>
             <div className="mt-auto pt-4">
-                <p className="text-xl font-bold text-orange-500">{formatCurrency(item.price)}</p>
-                <button onClick={() => onOrder(item)} className="mt-2 w-full bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors duration-300">
+                <p className="text-xl font-bold text-orange-600">{formatCurrency(item.price)}</p>
+                <button onClick={() => onOrder(item)} className="mt-3 w-full bg-orange-500 text-white font-bold py-2.5 px-4 rounded-lg hover:bg-orange-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                     Pesan
                 </button>
             </div>
         </div>
     </div>
 );
+
+// Komponen untuk opsi dengan kuantitas di menu Birthday
+const BirthdayOptionItem = ({ name, quantity, onQuantityChange, disableAdd }) => {
+    return (
+        <div className="w-full flex items-center justify-between p-3 border rounded-lg bg-white">
+            <span className="font-semibold text-gray-800">{name}</span>
+            <div className="flex items-center gap-2">
+                <button 
+                    onClick={() => onQuantityChange(quantity - 1)} 
+                    disabled={quantity === 0}
+                    className="bg-gray-200 rounded-full p-2 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <Minus size={16}/>
+                </button>
+                <span className="text-xl font-bold w-8 text-center">{quantity}</span>
+                <button 
+                    onClick={() => onQuantityChange(quantity + 1)} 
+                    disabled={disableAdd && quantity === 0}
+                    className="bg-gray-200 rounded-full p-2 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <Plus size={16}/>
+                </button>
+            </div>
+        </div>
+    );
+};
+
 
 // Komponen Modal untuk kustomisasi pesanan
 const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartItem }) => {
@@ -338,7 +367,6 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
     const [orderType, setOrderType] = useState(editingCartItem ? editingCartItem.orderType : 'Dine-in');
     
     useEffect(() => {
-        // Reset state when item changes or when opening for a new item
         if (item) {
             setQuantity(editingCartItem ? editingCartItem.quantity : 1);
             setOptions(editingCartItem ? editingCartItem.options : {});
@@ -362,7 +390,7 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
                 }
             } else {
                 if (newOptions[category] && newOptions[category].name === value) {
-                    delete newOptions[category]; // Deselect if same option is clicked
+                    delete newOptions[category];
                 } else {
                     newOptions[category] = { name: value, price };
                 }
@@ -378,14 +406,43 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
             const isSelected = currentSelection.includes(optionName);
 
             if (isSelected) {
-                // Deselect
                 newOptions[groupTitle] = currentSelection.filter(name => name !== optionName);
             } else {
-                // Select if limit not reached
                 if (currentSelection.length < limit) {
                     newOptions[groupTitle] = [...currentSelection, optionName];
                 }
             }
+            return newOptions;
+        });
+    };
+    
+    const handleBirthdayOptionQuantityChange = (groupTitle, optionName, newQuantity, limit) => {
+        setOptions(prev => {
+            const newOptions = { ...prev };
+            let group = [...(newOptions[groupTitle] || [])];
+            const itemIndex = group.findIndex(i => i.name === optionName);
+            const currentItem = itemIndex > -1 ? group[itemIndex] : null;
+
+            const totalOfOtherItems = group.reduce((sum, item) => (item.name !== optionName ? sum + item.quantity : sum), 0);
+
+            if (totalOfOtherItems + newQuantity > limit) {
+                alert(`Anda tidak bisa memilih lebih dari ${limit} item untuk grup ini.`);
+                return prev;
+            }
+
+            if (newQuantity > 0) {
+                if (currentItem) {
+                    group[itemIndex] = { ...currentItem, quantity: newQuantity };
+                } else {
+                    group.push({ name: optionName, quantity: newQuantity });
+                }
+            } else {
+                if (currentItem) {
+                    group = group.filter(i => i.name !== optionName);
+                }
+            }
+
+            newOptions[groupTitle] = group;
             return newOptions;
         });
     };
@@ -395,16 +452,18 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
         let total = item.price;
         let takeawayFee = 0;
 
-        // Calculate options price
         Object.values(options).forEach(opt => {
             if (Array.isArray(opt)) {
-                opt.forEach(subOpt => total += subOpt.price || 0);
+                opt.forEach(subOpt => {
+                    const itemPrice = subOpt.price || 0;
+                    const itemQuantity = subOpt.quantity || 1;
+                    total += itemPrice * itemQuantity;
+                });
             } else if (opt && typeof opt === 'object') {
                 total += opt.price || 0;
             }
         });
 
-        // Calculate takeaway fee
         if (orderType === 'Take-away') {
             switch(item.category) {
                 case 'Ramen':
@@ -414,42 +473,39 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
                 case 'Okonomiyaki':
                 case 'Paket':
                     takeawayFee = 1000;
-                    if (item.name.includes('Fusion') || item.name.includes('Mentai')) {
-                         if (item.category === 'Sushi') takeawayFee = 1000;
-                    }
-                     if (item.name.includes('Mentai Rice')) {
-                         if (item.category === 'Rice') takeawayFee = 0;
+                    if ((item.category === 'Sushi' && (item.name.includes('Fusion') || item.name.includes('Mentai'))) ||
+                        (item.category === 'Rice' && !item.name.includes('Mentai Rice'))) {
+                        takeawayFee = 1000;
+                    } else if (item.category === 'Rice' && item.name.includes('Mentai Rice')) {
+                        takeawayFee = 0;
                     }
                     break;
                 case 'Happy Hour':
-                    const selectedChoices = options[item.name] || {};
                     let foodItemCount = 0;
-                    const packageOptions = customizationOptions['Happy Hour'][item.name] || [];
-                    packageOptions.forEach(group => {
+                    const hhOptions = customizationOptions['Happy Hour'][item.name] || [];
+                    hhOptions.forEach(group => {
                         const selections = options[group.title] || [];
-                        selections.forEach(selectionName => {
-                            if(group.type === 'food') foodItemCount++;
-                        });
+                        if (group.type === 'food') {
+                            foodItemCount += selections.length;
+                        }
                     });
                     takeawayFee = foodItemCount * 1000;
                     break;
                 case 'Dinner Delight':
-                    let dinnerItemCount = 0;
-                    const dinnerPackageOptions = customizationOptions['Dinner Delight'][item.name] || [];
-                    dinnerPackageOptions.forEach(group => {
-                        const selections = options[group.title] || [];
-                        if (group.type !== 'drink') {
-                            dinnerItemCount += selections.length;
-                        }
-                    });
-                     // Special cases from prompt
-                    if (item.name === 'Dinner Delight 2C') takeawayFee = 3000;
-                    else if (item.name === 'Dinner Delight 4A') takeawayFee = 5000;
-                    else if (item.name === 'Dinner Delight 4B') takeawayFee = 5000;
+                    if (item.name === 'Dinner Delight 2C' || item.name === 'Dinner Delight 2D') takeawayFee = 3000;
+                    else if (item.name === 'Dinner Delight 4A' || item.name === 'Dinner Delight 4B') takeawayFee = 5000;
                     else if (item.name === 'Dinner Delight 4C') takeawayFee = 6000;
                     else if (item.name === 'Dinner Delight 4D') takeawayFee = 6000;
                     else {
-                        takeawayFee = dinnerItemCount * 1000;
+                        let ddItemCount = 0;
+                        const ddOptions = customizationOptions['Dinner Delight'][item.name] || [];
+                        ddOptions.forEach(group => {
+                            const selections = options[group.title] || [];
+                            if (group.type !== 'drink') {
+                                ddItemCount += selections.length;
+                            }
+                        });
+                        takeawayFee = ddItemCount * 1000;
                     }
                     break;
                 default:
@@ -465,20 +521,16 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
     const finalPrice = calculateTotalPrice();
 
     const handleSubmit = () => {
-        // Validation for birthday/package menus
         if (item.category === 'Birthday' || item.category === 'Happy Hour' || item.category === 'Dinner Delight') {
             const packageOptions = customizationOptions[item.category][item.name] || [];
-            let allSelected = true;
             for (const group of packageOptions) {
-                const selectedCount = (options[group.title] || []).length;
-                if (selectedCount < group.limit) {
-                    allSelected = false;
-                    break;
+                const currentGroupSelections = options[group.title] || [];
+                const totalQuantityInGroup = currentGroupSelections.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                
+                if (totalQuantityInGroup < group.limit) {
+                    alert(`Harap pilih total ${group.limit} item untuk kategori "${group.title}".`);
+                    return;
                 }
-            }
-            if (!allSelected) {
-                alert(`Harap pilih semua isian sesuai jumlah yang ditentukan untuk ${item.name}.`);
-                return;
             }
         }
 
@@ -573,7 +625,6 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
                                 ))}
                             </OptionGroup>
                         )}
-                        {/* CHANGED: Removed separate "Spicy" group, it's now part of "Extra" */}
                         <OptionGroup title="Extra">
                             {customizationOptions.Okonomiyaki.extra.map(opt => (
                                 <OptionBox key={opt.name} name={opt.name} price={opt.price} selected={options.extra?.some(e => e.name === opt.name)} onChange={() => handleOptionChange('extra', opt.name, opt.price, true)} />
@@ -582,6 +633,34 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
                     </>
                 );
             case 'Birthday':
+                const birthdayOptions = customizationOptions[item.category]?.[item.name];
+                if (!birthdayOptions) return null;
+                return birthdayOptions.map(group => {
+                    const currentGroupSelections = options[group.title] || [];
+                    const totalQuantityInGroup = currentGroupSelections.reduce((sum, item) => sum + item.quantity, 0);
+                    return (
+                        <OptionGroup key={group.title} title={`${group.title} (Pilih ${group.limit})`}>
+                            <div className="w-full text-right text-sm text-gray-500 mb-2">
+                                Terpilih: {totalQuantityInGroup} / {group.limit}
+                            </div>
+                            <div className="w-full space-y-2">
+                            {group.options.map(optName => {
+                                const selectedItem = currentGroupSelections.find(i => i.name === optName);
+                                const currentQuantity = selectedItem ? selectedItem.quantity : 0;
+                                return (
+                                    <BirthdayOptionItem
+                                        key={optName}
+                                        name={optName}
+                                        quantity={currentQuantity}
+                                        onQuantityChange={(newQuantity) => handleBirthdayOptionQuantityChange(group.title, optName, newQuantity, group.limit)}
+                                        disableAdd={totalQuantityInGroup >= group.limit}
+                                    />
+                                );
+                            })}
+                            </div>
+                        </OptionGroup>
+                    );
+                });
             case 'Happy Hour':
             case 'Dinner Delight':
                 const packageOptions = customizationOptions[item.category]?.[item.name];
@@ -607,7 +686,7 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
     const hasTakeawayOption = item.category !== 'Birthday';
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col">
                 <div className="p-4 border-b flex justify-between items-center">
                     <h2 className="text-xl font-bold">{item.name}</h2>
@@ -698,7 +777,7 @@ const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, onEditIt
             Object.entries(item.options).forEach(([key, value]) => {
                 let optionString = '';
                 if (Array.isArray(value)) {
-                    optionString = value.map(v => typeof v === 'object' ? v.name : v).join(', ');
+                    optionString = value.map(v => typeof v === 'object' ? `${v.name} (x${v.quantity})` : v).join(', ');
                 } else if (typeof value === 'object' && value.name) {
                     optionString = value.name;
                 }
@@ -715,7 +794,7 @@ const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, onEditIt
     };
 
     const sendWhatsApp = () => {
-        const phoneNumber = "6281234567890"; // Ganti dengan nomor WhatsApp Anda
+        const phoneNumber = "6287865927598"; // Ganti dengan nomor WhatsApp Anda
         const message = generateWhatsAppMessage();
         const url = `https://wa.me/${phoneNumber}?text=${message}`;
         window.open(url, '_blank');
@@ -724,7 +803,7 @@ const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, onEditIt
 
     if (showQris) {
         return (
-            <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
+            <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4">
                 <div className="bg-white rounded-lg p-6 text-center max-w-sm w-full">
                     <h3 className="text-xl font-bold mb-4">Pembayaran QRIS</h3>
                     <p className="mb-4">Silakan scan QR Code di bawah ini untuk pembayaran. Setelah itu, klik tombol di bawah untuk mengirim detail pesanan ke WhatsApp.</p>
@@ -742,7 +821,7 @@ const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, onEditIt
 
     if (showDineInMessage) {
         return (
-            <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
+            <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4">
                 <div className="bg-white rounded-lg p-8 text-center max-w-sm w-full">
                     <h3 className="text-2xl font-bold mb-4 text-orange-500">Pesanan Diterima!</h3>
                     <p className="text-lg">Silakan lakukan pembayaran di kasir saat Anda di restoran.</p>
@@ -756,7 +835,7 @@ const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, onEditIt
     }
 
     return (
-         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end z-40">
+         <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-end z-40">
             <div className="bg-gray-100 w-full max-w-md h-full flex flex-col shadow-2xl">
                 <div className="p-4 bg-white border-b flex justify-between items-center">
                     <h2 className="text-xl font-bold text-gray-800">Keranjang Anda</h2>
@@ -769,6 +848,7 @@ const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, onEditIt
                         <p className="text-gray-400">Yuk, pilih menu favoritmu!</p>
                     </div>
                 ) : (
+                    <>
                     <div className="flex-grow overflow-y-auto p-4">
                         {cart.map((item, index) => (
                             <div key={item.cartId} className="bg-white p-3 rounded-lg shadow-sm mb-3 flex gap-4">
@@ -785,7 +865,7 @@ const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, onEditIt
                                         {Object.entries(item.options).map(([key, value]) => {
                                             let optionString = '';
                                             if (Array.isArray(value)) {
-                                                optionString = value.map(v => typeof v === 'object' ? v.name : v).join(', ');
+                                                optionString = value.map(v => typeof v === 'object' ? `${v.name} (x${v.quantity})` : v).join(', ');
                                             } else if (typeof value === 'object' && value.name) {
                                                 optionString = value.name;
                                             }
@@ -807,22 +887,45 @@ const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, onEditIt
                             </div>
                         ))}
                     </div>
-                )}
-                {cart.length > 0 && (
-                    <div className="p-4 bg-white border-t">
-                        <div className="mb-4">
-                            <input type="text" placeholder="Nama Anda*" value={customerName} onChange={e => setCustomerName(e.target.value)} className="w-full p-2 border rounded mb-2"/>
-                            <input type="text" placeholder="Alamat/Nomor Meja*" value={customerAddress} onChange={e => setCustomerAddress(e.target.value)} className="w-full p-2 border rounded mb-2"/>
-                            <textarea placeholder="Catatan (opsional)" value={notes} onChange={e => setNotes(e.target.value)} className="w-full p-2 border rounded" rows="2"></textarea>
+                    <div className="p-4 bg-white border-t mt-auto">
+                        <div className="space-y-3">
+                            <div>
+                                <label htmlFor="customerName" className="block text-sm font-medium text-gray-700 mb-1">Nama Anda*</label>
+                                <div className="relative rounded-md shadow-sm">
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                        <User className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input type="text" id="customerName" value={customerName} onChange={e => setCustomerName(e.target.value)} className="block w-full rounded-md border-0 py-2.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm" placeholder="John Doe"/>
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="customerAddress" className="block text-sm font-medium text-gray-700 mb-1">Alamat / No. Meja*</label>
+                                <div className="relative rounded-md shadow-sm">
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                        <MapPin className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input type="text" id="customerAddress" value={customerAddress} onChange={e => setCustomerAddress(e.target.value)} className="block w-full rounded-md border-0 py-2.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm" placeholder="Jl. Merdeka No. 10 atau Meja 5"/>
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">Catatan (Opsional)</label>
+                                <div className="relative rounded-md shadow-sm">
+                                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 pt-2.5 self-start">
+                                        <MessageSquare className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <textarea id="notes" value={notes} onChange={e => setNotes(e.target.value)} className="block w-full rounded-md border-0 py-2.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm" rows="2" placeholder="Contoh: tidak pedas, tanpa bawang"></textarea>
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex justify-between items-center mt-6 mb-4">
                             <span className="text-lg font-semibold">Total</span>
                             <span className="text-2xl font-bold text-orange-500">{formatCurrency(totalCartPrice)}</span>
                         </div>
-                        <button onClick={handleOrder} className="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600">
+                        <button onClick={handleOrder} className="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition-colors duration-300">
                             Pesan Sekarang
                         </button>
                     </div>
+                    </>
                 )}
             </div>
         </div>
@@ -833,7 +936,7 @@ const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, onEditIt
 const AiIntroModal = ({ isOpen, onClose, onProceed }) => {
     if (!isOpen) return null;
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-sm text-center p-8">
                 <div className="flex justify-center mb-4">
                     <BrainCircuit size={48} className="text-purple-500" />
@@ -849,17 +952,18 @@ const AiIntroModal = ({ isOpen, onClose, onProceed }) => {
     );
 };
 
-// NEW: Initial popup on app load
-const InitialAiPopup = ({ isOpen, onClose }) => {
+// Birthday warning popup
+const BirthdayWarningModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-[100] p-4">
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-sm text-center p-6 transform transition-all animate-fade-in-up">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-[100] p-4">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-sm text-center p-6">
                  <div className="flex justify-center mb-4">
-                    <BrainCircuit size={40} className="text-purple-500" />
+                    <Cake size={40} className="text-pink-500" />
                 </div>
-                <p className="text-gray-700 font-semibold mb-4 text-lg">Tanyakan kepada AI kami untuk menanyakan menu best seller di katalog kami!</p>
-                <button onClick={onClose} className="w-full py-2 px-4 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Perhatian</h3>
+                <p className="text-gray-700 font-semibold mb-4">Untuk menu Birthday, minimal pemesanan H-1.</p>
+                <button onClick={onClose} className="w-full py-2 px-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
                     Mengerti
                 </button>
             </div>
@@ -885,21 +989,28 @@ const GeminiModal = ({ isOpen, onClose }) => {
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
-        const query = userInput.trim();
+        const query = userInput.trim().toLowerCase();
         if (!query || isLoading) return;
 
-        setChatHistory(prev => [...prev, { sender: 'user', text: query }]);
+        setChatHistory(prev => [...prev, { sender: 'user', text: userInput.trim() }]);
         setUserInput('');
         setIsLoading(true);
-
-        const menuList = menuData.map(item => item.name).join(', ');
-        const prompt = `Anda adalah asisten kuliner di sebuah restoran Jepang. Berdasarkan pertanyaan pengguna: "${query}", berikan jawaban yang relevan. Jika pengguna menanyakan best seller, rekomendasikan 3 menu dari daftar berikut: ${menuList}. Jelaskan secara singkat dan menarik. Jika pertanyaannya tidak relevan, jawab dengan ramah bahwa Anda hanya bisa membantu seputar menu.`;
         
         try {
+            // Simulate API call delay
             await new Promise(resolve => setTimeout(resolve, 1500));
+            
             let simulatedText = "Maaf, saya hanya bisa memberikan informasi seputar menu di katalog kami.";
-            if (query.toLowerCase().includes('best seller') || query.toLowerCase().includes('rekomendasi')) {
-                 simulatedText = `Tentu, ini 3 rekomendasi menu best seller kami yang wajib Anda coba:\n\n1. **Fusion Beef Cheese Roll**: Kombinasi sempurna antara daging sapi gurih dan keju leleh yang dibalut nasi sushi. Sangat disukai karena rasanya yang creamy dan memuaskan!\n\n2. **Ramen Curry**: Kuah kari Jepang kami yang kental dan kaya rempah, disajikan dengan mie ramen kenyal. Pilihan tepat untuk menghangatkan diri dan memanjakan lidah.\n\n3. **Salmon Kani Mentai Rice**: Nasi pulen dengan topping salmon, crab stick, dan saus mentai yang di-torch hingga wangi. Menu ini viral karena kelezatannya yang bikin nagih!`;
+
+            if (query.includes('best seller') || query.includes('rekomendasi')) {
+                if (query.includes('ramen')) {
+                    simulatedText = `Tentu! Untuk kategori Ramen, menu best seller kami adalah:\n\n1. **Ramen Curry**: Kuah kari Jepang kami yang kental dan kaya rempah, favorit banyak orang!\n\n2. **Ramen Tomyam**: Rasa asam pedas yang menyegarkan, pilihan tepat untuk Anda yang suka tantangan rasa.`;
+                } else if (query.includes('sushi')) {
+                    simulatedText = `Pilihan bagus! Untuk Sushi, yang paling laris adalah:\n\n1. **Fusion Beef Cheese Roll**: Kombinasi sempurna antara daging sapi gurih dan keju leleh yang di-torch.\n\n2. **Fusion Pizza Roll**: Sensasi unik makan pizza dalam bentuk sushi, wajib coba!`;
+                } else {
+                    // General best seller
+                    simulatedText = `Tentu, ini menu best seller di katalog kami:\n\n**Ramen:**\n1. Ramen Curry\n2. Ramen Tomyam\n\n**Sushi:**\n1. Fusion Beef Cheese Roll\n2. Fusion Pizza Roll`;
+                }
             }
             
             setChatHistory(prev => [...prev, { sender: 'ai', text: simulatedText }]);
@@ -913,7 +1024,7 @@ const GeminiModal = ({ isOpen, onClose }) => {
     };
 
     return (
-        <div className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 ${isOpen ? '' : 'hidden'}`}>
+        <div className={`fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4 ${isOpen ? '' : 'hidden'}`}>
             <div className="bg-white rounded-lg shadow-xl w-full max-w-lg flex flex-col max-h-[80vh]">
                 <div className="p-4 border-b flex justify-between items-center">
                     <h2 className="text-xl font-bold flex items-center gap-2"><BrainCircuit className="text-purple-500"/> Asisten AI</h2>
@@ -973,8 +1084,7 @@ export default function App() {
     const [toastMessage, setToastMessage] = useState('');
     const [isAiIntroOpen, setIsAiIntroOpen] = useState(false);
     const [isGeminiModalOpen, setIsGeminiModalOpen] = useState(false);
-    // NEW: State for the initial popup
-    const [showInitialPopup, setShowInitialPopup] = useState(true);
+    const [showBirthdayWarning, setShowBirthdayWarning] = useState(false);
 
     const filteredMenu = useMemo(() =>
         menuData.filter(item => item.category === selectedCategory),
@@ -996,10 +1106,10 @@ export default function App() {
     const handleAddToCart = (item, isEditing = false) => {
         setCart(prevCart => {
             if (isEditing) {
-                setToastMessage('Pesanan berhasil diupdate!');
+                setToastMessage('Pesanan anda sudah diupdate');
                 return prevCart.map(cartItem => cartItem.cartId === item.cartId ? item : cartItem);
             } else {
-                setToastMessage('Berhasil ditambahkan ke keranjang!');
+                setToastMessage('Pesanan anda sudah di tambahkan');
                 const existingItem = prevCart.find(cartItem => cartItem.id === item.id && JSON.stringify(cartItem.options) === JSON.stringify(item.options) && cartItem.orderType === item.orderType);
                 if (existingItem) {
                     return prevCart.map(cartItem => cartItem.cartId === existingItem.cartId ? { ...cartItem, quantity: cartItem.quantity + item.quantity, totalPrice: cartItem.totalPrice + item.totalPrice } : cartItem);
@@ -1029,17 +1139,33 @@ export default function App() {
     const handleRemoveItem = (cartId) => {
         setCart(cart => cart.filter(item => item.cartId !== cartId));
     };
+
+    const handleCategoryClick = (category) => {
+        if (category === 'Birthday' && selectedCategory !== 'Birthday') {
+            setShowBirthdayWarning(true);
+        } else {
+            setSelectedCategory(category);
+        }
+    };
     
     const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
     return (
         <div className="bg-gray-50 min-h-screen font-sans">
-            {/* NEW: Render initial popup */}
-            <InitialAiPopup isOpen={showInitialPopup} onClose={() => setShowInitialPopup(false)} />
+            <BirthdayWarningModal 
+                isOpen={showBirthdayWarning}
+                onClose={() => {
+                    setShowBirthdayWarning(false);
+                    setSelectedCategory('Birthday');
+                }}
+            />
 
             <header className="bg-white shadow-md sticky top-0 z-30">
                 <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-                    <h1 className="text-2xl font-extrabold text-orange-500">Katalog Kuliner</h1>
+                    <div className="flex items-center gap-2">
+                        <img src="/img/logo/logo.png" alt="" width="50" height="34"></img>
+                         <span className="sr-only">Katalog Kuliner</span>
+                    </div>
                     <div className="flex items-center gap-4">
                          <button onClick={() => setIsAiIntroOpen(true)} className="flex items-center gap-2 text-purple-600 font-semibold hover:text-purple-800 transition-colors">
                             <BrainCircuit size={20} />
@@ -1058,7 +1184,7 @@ export default function App() {
                         {categories.map(category => (
                             <button
                                 key={category}
-                                onClick={() => setSelectedCategory(category)}
+                                onClick={() => handleCategoryClick(category)}
                                 className={`py-3 px-3 sm:px-4 text-sm sm:text-base font-semibold whitespace-nowrap transition-colors duration-300 ${selectedCategory === category ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500 hover:text-orange-500'}`}
                             >
                                 {category}
