@@ -331,6 +331,33 @@ const MenuItem = ({ item, onOrder }) => (
     </div>
 );
 
+// Komponen untuk opsi dengan kuantitas di menu Birthday
+const BirthdayOptionItem = ({ name, quantity, onQuantityChange, disableAdd }) => {
+    return (
+        <div className="w-full flex items-center justify-between p-3 border rounded-lg bg-white">
+            <span className="font-semibold text-gray-800">{name}</span>
+            <div className="flex items-center gap-2">
+                <button 
+                    onClick={() => onQuantityChange(quantity - 1)} 
+                    disabled={quantity === 0}
+                    className="bg-gray-200 rounded-full p-2 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <Minus size={16}/>
+                </button>
+                <span className="text-xl font-bold w-8 text-center">{quantity}</span>
+                <button 
+                    onClick={() => onQuantityChange(quantity + 1)} 
+                    disabled={disableAdd && quantity === 0}
+                    className="bg-gray-200 rounded-full p-2 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <Plus size={16}/>
+                </button>
+            </div>
+        </div>
+    );
+};
+
+
 // Komponen Modal untuk kustomisasi pesanan
 const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartItem }) => {
     if (!isOpen || !item) return null;
@@ -340,7 +367,6 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
     const [orderType, setOrderType] = useState(editingCartItem ? editingCartItem.orderType : 'Dine-in');
     
     useEffect(() => {
-        // Reset state when item changes or when opening for a new item
         if (item) {
             setQuantity(editingCartItem ? editingCartItem.quantity : 1);
             setOptions(editingCartItem ? editingCartItem.options : {});
@@ -364,7 +390,7 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
                 }
             } else {
                 if (newOptions[category] && newOptions[category].name === value) {
-                    delete newOptions[category]; // Deselect if same option is clicked
+                    delete newOptions[category];
                 } else {
                     newOptions[category] = { name: value, price };
                 }
@@ -380,14 +406,43 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
             const isSelected = currentSelection.includes(optionName);
 
             if (isSelected) {
-                // Deselect
                 newOptions[groupTitle] = currentSelection.filter(name => name !== optionName);
             } else {
-                // Select if limit not reached
                 if (currentSelection.length < limit) {
                     newOptions[groupTitle] = [...currentSelection, optionName];
                 }
             }
+            return newOptions;
+        });
+    };
+    
+    const handleBirthdayOptionQuantityChange = (groupTitle, optionName, newQuantity, limit) => {
+        setOptions(prev => {
+            const newOptions = { ...prev };
+            let group = [...(newOptions[groupTitle] || [])];
+            const itemIndex = group.findIndex(i => i.name === optionName);
+            const currentItem = itemIndex > -1 ? group[itemIndex] : null;
+
+            const totalOfOtherItems = group.reduce((sum, item) => (item.name !== optionName ? sum + item.quantity : sum), 0);
+
+            if (totalOfOtherItems + newQuantity > limit) {
+                alert(`Anda tidak bisa memilih lebih dari ${limit} item untuk grup ini.`);
+                return prev;
+            }
+
+            if (newQuantity > 0) {
+                if (currentItem) {
+                    group[itemIndex] = { ...currentItem, quantity: newQuantity };
+                } else {
+                    group.push({ name: optionName, quantity: newQuantity });
+                }
+            } else {
+                if (currentItem) {
+                    group = group.filter(i => i.name !== optionName);
+                }
+            }
+
+            newOptions[groupTitle] = group;
             return newOptions;
         });
     };
@@ -397,16 +452,18 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
         let total = item.price;
         let takeawayFee = 0;
 
-        // Calculate options price
         Object.values(options).forEach(opt => {
             if (Array.isArray(opt)) {
-                opt.forEach(subOpt => total += subOpt.price || 0);
+                opt.forEach(subOpt => {
+                    const itemPrice = subOpt.price || 0;
+                    const itemQuantity = subOpt.quantity || 1;
+                    total += itemPrice * itemQuantity;
+                });
             } else if (opt && typeof opt === 'object') {
                 total += opt.price || 0;
             }
         });
 
-        // Calculate takeaway fee
         if (orderType === 'Take-away') {
             switch(item.category) {
                 case 'Ramen':
@@ -416,42 +473,39 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
                 case 'Okonomiyaki':
                 case 'Paket':
                     takeawayFee = 1000;
-                    if (item.name.includes('Fusion') || item.name.includes('Mentai')) {
-                         if (item.category === 'Sushi') takeawayFee = 1000;
-                    }
-                     if (item.name.includes('Mentai Rice')) {
-                         if (item.category === 'Rice') takeawayFee = 0;
+                    if ((item.category === 'Sushi' && (item.name.includes('Fusion') || item.name.includes('Mentai'))) ||
+                        (item.category === 'Rice' && !item.name.includes('Mentai Rice'))) {
+                        takeawayFee = 1000;
+                    } else if (item.category === 'Rice' && item.name.includes('Mentai Rice')) {
+                        takeawayFee = 0;
                     }
                     break;
                 case 'Happy Hour':
-                    const selectedChoices = options[item.name] || {};
                     let foodItemCount = 0;
-                    const packageOptions = customizationOptions['Happy Hour'][item.name] || [];
-                    packageOptions.forEach(group => {
+                    const hhOptions = customizationOptions['Happy Hour'][item.name] || [];
+                    hhOptions.forEach(group => {
                         const selections = options[group.title] || [];
-                        selections.forEach(selectionName => {
-                            if(group.type === 'food') foodItemCount++;
-                        });
+                        if (group.type === 'food') {
+                            foodItemCount += selections.length;
+                        }
                     });
                     takeawayFee = foodItemCount * 1000;
                     break;
                 case 'Dinner Delight':
-                    let dinnerItemCount = 0;
-                    const dinnerPackageOptions = customizationOptions['Dinner Delight'][item.name] || [];
-                    dinnerPackageOptions.forEach(group => {
-                        const selections = options[group.title] || [];
-                        if (group.type !== 'drink') {
-                            dinnerItemCount += selections.length;
-                        }
-                    });
-                     // Special cases from prompt
-                    if (item.name === 'Dinner Delight 2C') takeawayFee = 3000;
-                    else if (item.name === 'Dinner Delight 4A') takeawayFee = 5000;
-                    else if (item.name === 'Dinner Delight 4B') takeawayFee = 5000;
+                    if (item.name === 'Dinner Delight 2C' || item.name === 'Dinner Delight 2D') takeawayFee = 3000;
+                    else if (item.name === 'Dinner Delight 4A' || item.name === 'Dinner Delight 4B') takeawayFee = 5000;
                     else if (item.name === 'Dinner Delight 4C') takeawayFee = 6000;
                     else if (item.name === 'Dinner Delight 4D') takeawayFee = 6000;
                     else {
-                        takeawayFee = dinnerItemCount * 1000;
+                        let ddItemCount = 0;
+                        const ddOptions = customizationOptions['Dinner Delight'][item.name] || [];
+                        ddOptions.forEach(group => {
+                            const selections = options[group.title] || [];
+                            if (group.type !== 'drink') {
+                                ddItemCount += selections.length;
+                            }
+                        });
+                        takeawayFee = ddItemCount * 1000;
                     }
                     break;
                 default:
@@ -467,20 +521,16 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
     const finalPrice = calculateTotalPrice();
 
     const handleSubmit = () => {
-        // Validation for birthday/package menus
         if (item.category === 'Birthday' || item.category === 'Happy Hour' || item.category === 'Dinner Delight') {
             const packageOptions = customizationOptions[item.category][item.name] || [];
-            let allSelected = true;
             for (const group of packageOptions) {
-                const selectedCount = (options[group.title] || []).length;
-                if (selectedCount < group.limit) {
-                    allSelected = false;
-                    break;
+                const currentGroupSelections = options[group.title] || [];
+                const totalQuantityInGroup = currentGroupSelections.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                
+                if (totalQuantityInGroup < group.limit) {
+                    alert(`Harap pilih total ${group.limit} item untuk kategori "${group.title}".`);
+                    return;
                 }
-            }
-            if (!allSelected) {
-                alert(`Harap pilih semua isian sesuai jumlah yang ditentukan untuk ${item.name}.`);
-                return;
             }
         }
 
@@ -583,6 +633,34 @@ const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editingCartIte
                     </>
                 );
             case 'Birthday':
+                const birthdayOptions = customizationOptions[item.category]?.[item.name];
+                if (!birthdayOptions) return null;
+                return birthdayOptions.map(group => {
+                    const currentGroupSelections = options[group.title] || [];
+                    const totalQuantityInGroup = currentGroupSelections.reduce((sum, item) => sum + item.quantity, 0);
+                    return (
+                        <OptionGroup key={group.title} title={`${group.title} (Pilih ${group.limit})`}>
+                            <div className="w-full text-right text-sm text-gray-500 mb-2">
+                                Terpilih: {totalQuantityInGroup} / {group.limit}
+                            </div>
+                            <div className="w-full space-y-2">
+                            {group.options.map(optName => {
+                                const selectedItem = currentGroupSelections.find(i => i.name === optName);
+                                const currentQuantity = selectedItem ? selectedItem.quantity : 0;
+                                return (
+                                    <BirthdayOptionItem
+                                        key={optName}
+                                        name={optName}
+                                        quantity={currentQuantity}
+                                        onQuantityChange={(newQuantity) => handleBirthdayOptionQuantityChange(group.title, optName, newQuantity, group.limit)}
+                                        disableAdd={totalQuantityInGroup >= group.limit}
+                                    />
+                                );
+                            })}
+                            </div>
+                        </OptionGroup>
+                    );
+                });
             case 'Happy Hour':
             case 'Dinner Delight':
                 const packageOptions = customizationOptions[item.category]?.[item.name];
@@ -699,7 +777,7 @@ const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, onEditIt
             Object.entries(item.options).forEach(([key, value]) => {
                 let optionString = '';
                 if (Array.isArray(value)) {
-                    optionString = value.map(v => typeof v === 'object' ? v.name : v).join(', ');
+                    optionString = value.map(v => typeof v === 'object' ? `${v.name} (x${v.quantity})` : v).join(', ');
                 } else if (typeof value === 'object' && value.name) {
                     optionString = value.name;
                 }
@@ -787,7 +865,7 @@ const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, onEditIt
                                         {Object.entries(item.options).map(([key, value]) => {
                                             let optionString = '';
                                             if (Array.isArray(value)) {
-                                                optionString = value.map(v => typeof v === 'object' ? v.name : v).join(', ');
+                                                optionString = value.map(v => typeof v === 'object' ? `${v.name} (x${v.quantity})` : v).join(', ');
                                             } else if (typeof value === 'object' && value.name) {
                                                 optionString = value.name;
                                             }
@@ -1084,7 +1162,10 @@ export default function App() {
 
             <header className="bg-white shadow-md sticky top-0 z-30">
                 <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-                    <h1 className="text-2xl font-extrabold text-orange-500">Katalog Kuliner</h1>
+                    <div className="flex items-center gap-2">
+                        <img src="/img/logo/logo.png" alt="" width="50" height="34"></img>
+                         <span className="sr-only">Katalog Kuliner</span>
+                    </div>
                     <div className="flex items-center gap-4">
                          <button onClick={() => setIsAiIntroOpen(true)} className="flex items-center gap-2 text-purple-600 font-semibold hover:text-purple-800 transition-colors">
                             <BrainCircuit size={20} />
