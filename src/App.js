@@ -794,7 +794,7 @@ const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, onEditIt
     };
 
     const sendWhatsApp = () => {
-        const phoneNumber = "6281234567890"; // Ganti dengan nomor WhatsApp Anda
+        const phoneNumber = "6287865927598"; // Ganti dengan nomor WhatsApp Anda
         const message = generateWhatsAppMessage();
         const url = `https://wa.me/${phoneNumber}?text=${message}`;
         window.open(url, '_blank');
