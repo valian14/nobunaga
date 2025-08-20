@@ -4,8 +4,8 @@
 export const customizationOptions = {
     Ramen: {
         isian: [
-            { name: 'Katsu', price: 8000 }, { name: 'Ebi Tempura', price: 7000 },
-            { name: 'Gyoza', price: 6000 }, { name: 'Fishball', price: 5000 },
+            { name: 'ChickenKatsu', price: 8000 }, { name: 'Ebi Katsu', price: 8000 },
+            { name: 'Gyoza', price: 7000 }, { name: 'Fishball', price: 6000 },
             { name: 'Gyuniku', price: 10000 }
         ],
         level: [
@@ -15,14 +15,14 @@ export const customizationOptions = {
     },
     Sushi: {
         extra: [
-            { name: 'Fried', price: 2000 }, { name: 'Spicy', price: 1000 }
+            { name: 'Fried', price: 3000 }, { name: 'Spicy', price: 3000 }
         ]
     },
     Rice: {
         extra: [ { name: 'Katsu', price: 8000 } ],
         level: [
-            { name: 'Level 1', price: 1000 }, { name: 'Level 2', price: 2000 },
-            { name: 'Level 3', price: 3000 }
+            { name: 'Level 1'}, { name: 'Level 2'},
+            { name: 'Level 3'}
         ]
     },
     Dorayaki: {
@@ -30,19 +30,19 @@ export const customizationOptions = {
     },
     Takoyaki: {
         extra: [
-            { name: 'Cheese', price: 3000 }, { name: 'Spicy', price: 1000 }
+            { name: 'Cheese', price: 2000 }, { name: 'Spicy', price: 2000 }
         ]
     },
     Okonomiyaki: {
         isian: [
-            { name: 'Crab', price: 5000 }, { name: 'Chicken', price: 5000 },
-            { name: 'Beef', price: 6000 }, { name: 'Sosis', price: 4000 },
-            { name: 'Tuna', price: 5000 }, { name: 'Shrimp', price: 6000 },
-            { name: 'Octopus', price: 7000 }
+            { name: 'Crab', price: 3000 }, { name: 'Chicken', price: 3000 },
+            { name: 'Beef', price: 3000 }, { name: 'Sosis', price: 3000 },
+            { name: 'Tuna', price: 3000 }, { name: 'Shrimp', price: 3000 },
+            { name: 'Octopus', price: 3000 }
         ],
         extra: [
-            { name: 'Fried Egg', price: 4000 }, { name: 'Potato Chips', price: 3000 },
-            { name: 'Melted Cheese', price: 5000 }, { name: 'Spicy', price: 1000 }
+            { name: 'Fried Egg', price: 5000 }, { name: 'Potato Chips', price: 3000 },
+            { name: 'Melted Cheese', price: 4000 }, { name: 'Extra Spicy', price: 3000 }
         ],
     },
     Birthday: {
@@ -55,7 +55,7 @@ export const customizationOptions = {
         ],
         'Kofuku Set': [
             { title: 'Fusion Sushi', limit: 3, options: ['Beef Cheese Roll', 'Tuna Spicy Roll', 'Pizza Roll', 'BBQ Roll', 'California Roll', 'Ebi Tempura Roll', 'California Spicy Roll', 'Ocean Roll'] },
-            { title: 'Original Sushi', limit: 10, options: ['Beef', 'Chicken', 'Crab', 'Octopus', 'Shrimp', 'Sosis'] },
+            { title: 'Original Sushi', limit: 2, options: ['Beef', 'Chicken', 'Crab', 'Octopus', 'Shrimp', 'Sosis'] },
             { title: 'Original Daimyo Sushi', limit: 1, options: ['Chicken', 'Crab', 'Beef', 'Tuna'] },
         ],
         'Ruriko Set': [
