@@ -66,8 +66,8 @@ export const menuData = [
     { id: 55, name: 'Dimsum Mayoseaweed', category: 'Dimsum', price: 13000, image: 'https://placehold.co/300x300/f1c40f/FFF?text=Dimsum+Mayoseaweed' },
     { id: 56, name: 'Dimsum Mozzarella', category: 'Dimsum', price: 13000, image: 'https://placehold.co/300x300/f1c40f/FFF?text=Dimsum+Mozzarella' },
     { id: 57, name: 'Dimsum Tobiko', category: 'Dimsum', price: 13000, image: 'https://placehold.co/300x300/f1c40f/FFF?text=Dimsum+Tobiko' },
-    { id: 58, name: 'Dimsum Spicy', category: 'Dimsum', price: 13000, image: 'https://placehold.co/300x300/f1c40f/FFF?text=Dimsum+Tobiko' },
-    { id: 59, name: 'Dimsum Mentaiko', category: 'Dimsum', price: 13000, image: 'https://placehold.co/300x300/f1c40f/FFF?text=Dimsum+Tobiko' },
+    { id: 58, name: 'Dimsum Spicy', category: 'Dimsum', price: 13000, image: 'https://placehold.co/300x300/f1c40f/FFF?text=Dimsum+Spicy' },
+    { id: 59, name: 'Dimsum Mentaiko', category: 'Dimsum', price: 13000, image: 'https://placehold.co/300x300/f1c40f/FFF?text=Dimsum+Mentaiko' },
     // Okonomiyaki
     { id: 60, name: 'Okonomiyaki Crab', category: 'Okonomiyaki', price: 16000, image: 'https://placehold.co/300x300/e67e22/FFF?text=Okonomiyaki+Crab' },
     { id: 61, name: 'Okonomiyaki Beef', category: 'Okonomiyaki', price: 16000, image: 'https://placehold.co/300x300/e67e22/FFF?text=Okonomiyaki+Beef' },
