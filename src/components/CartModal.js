@@ -69,7 +69,7 @@ export const CartModal = ({ isOpen, onClose, cart, onUpdateCart, onRemoveItem, o
                 <div className="bg-white rounded-lg p-6 text-center max-w-sm w-full">
                     <h3 className="text-xl font-bold mb-4">Pembayaran QRIS</h3>
                     <p className="mb-4">Silakan scan QR Code di bawah ini untuk pembayaran. Setelah itu, klik tombol di bawah untuk mengirim detail pesanan ke WhatsApp.</p>
-                    <img src="https://placehold.co/300x300/ffffff/000000?text=Contoh+QRIS" alt="QRIS Code" className="mx-auto mb-4" />
+                    <img src="img/pay/pay.jpg" alt="QRIS Code" className="mx-auto mb-4" />
                     <button onClick={sendWhatsApp} className="w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600">
                         Kirim Pesanan ke WhatsApp
                     </button>

@@ -102,7 +102,7 @@ export default function App() {
             <header className="bg-white shadow-md sticky top-0 z-30">
                 <div className="container mx-auto px-4 py-3 flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                        <img src="/img/logo/logo.png" alt="" width="50" height="34"></img>
+                        <img src="/img/logo/logo1.png" alt="" width="50" height="34"></img>
                          <span className="sr-only">Katalog Kuliner</span>
                     </div>
                     <div className="flex items-center gap-4">
