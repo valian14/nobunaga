@@ -2,7 +2,7 @@
 // Pindahkan komponen App dari baris 961-1084 dan import yang diperlukan
 
 import React, { useState, useMemo } from 'react';
-import {ShoppingCart, BrainCircuit } from 'lucide-react';
+import { ShoppingCart, BrainCircuit } from 'lucide-react';
 
 // Import components
 import { menuData, categories } from './data/menuData';
@@ -102,7 +102,7 @@ export default function App() {
             <header className="bg-white shadow-md sticky top-0 z-30">
                 <div className="container mx-auto px-4 py-3 flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                        <img src="/img/logo/logo1.png" alt="" width="50" height="34"></img>
+                        <img src="/img/logo/logo1.png" alt="" width="50" height="30"></img>
                          <span className="sr-only">Katalog Kuliner</span>
                     </div>
                     <div className="flex items-center gap-4">

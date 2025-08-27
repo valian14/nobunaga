@@ -3,10 +3,10 @@
 
 export const menuData = [
     // Ramen
-    { id: 1, name: 'Ramen Miso', category: 'Ramen', price: 15000, image: 'img/products/ramen/miso.png' },
-    { id: 2, name: 'Ramen Curry', category: 'Ramen', price: 15000, image: 'img/products/ramen/curry.png' },
-    { id: 3, name: 'Ramen Shoyu', category: 'Ramen', price: 15000, image: 'img/products/ramen/shoyuu.png' },
-    { id: 4, name: 'Ramen Tomyam', category: 'Ramen', price: 18000, image: 'img/products/ramen/tomyum.png' },
+    { id: 1, name: 'Ramen Miso', category: 'Ramen', price: 15000, image: 'img/products/ramen/mis.jpg' },
+    { id: 2, name: 'Ramen Curry', category: 'Ramen', price: 15000, image: 'img/products/ramen/cur.jpg' },
+    { id: 3, name: 'Ramen Shoyu', category: 'Ramen', price: 15000, image: 'img/products/ramen/sho.jpg' },
+    { id: 4, name: 'Ramen Tomyam', category: 'Ramen', price: 18000, image: 'img/products/ramen/tom.jpg' },
     // Sushi
     { id: 5, name: 'Sushi Chicken', category: 'Sushi', price: 11000, image: 'img/products/sushi/chicken ori.png' },
     { id: 6, name: 'Sushi Beef', category: 'Sushi', price: 11000, image: 'img/products/sushi/beef ori.png' },
@@ -17,7 +17,7 @@ export const menuData = [
     { id: 11, name: 'Fusion Beef Cheese Roll', category: 'Sushi', price: 16000, image: 'img/products/sushi/beef cheese.png' },
     { id: 12, name: 'Fusion Tuna Spicy Roll', category: 'Sushi', price: 16000, image: 'img/products/sushi/tuna spicy.png' },
     { id: 13, name: 'Fusion BBQ Roll', category: 'Sushi', price: 16000, image: 'img/products/sushi/bbq.png' },
-    { id: 14, name: 'Fusion Ebi Tempura Roll', category: 'Sushi', price: 18000, image: 'img/products/sushi/ebi tempura.png' },
+    { id: 14, name: 'Fusion Ebi Tempura Roll', category: 'Sushi', price: 18000, image: 'img/products/sushi/ebi tenpura.png' },
     { id: 15, name: 'Fusion California Roll', category: 'Sushi', price: 19000, image: 'img/products/sushi/califor.png' },
     { id: 16, name: 'Fusion Pizza Roll', category: 'Sushi', price: 19000, image: 'img/products/sushi/pizza roll.png' },
     { id: 17, name: 'Fusion Ocean Roll', category: 'Sushi', price: 19000, image: 'img/products/sushi/ocean.png' },
@@ -34,7 +34,7 @@ export const menuData = [
     { id: 27, name: 'Beef Mentai Rice', category: 'Rice', price: 22000, image: 'img/products/rice/beef mentai.png' },
     { id: 28, name: 'Chicken Mentai Rice', category: 'Rice', price: 20000, image: 'img/products/rice/chicken mentai.png' },
     // Drink
-    { id: 29, name: 'Strawberry Punch', category: 'Drink', price: 11000, image: 'img/products/drink/pppppppp.png' },
+    { id: 29, name: 'Strawberry Punch', category: 'Drink', price: 11000, image: 'img/products/drink/strawberry punch.png' },
     { id: 30, name: 'Ocha Lychee', category: 'Drink', price: 11000, image: 'img/products/drink/ocha lychee.png' },
     { id: 31, name: 'Sparkling Moca', category: 'Drink', price: 9000, image: 'img/products/drink/mocca.png' },
     { id: 32, name: 'Lychee Jell', category: 'Drink', price: 9000, image: 'img/products/drink/lychee jelly.png' },

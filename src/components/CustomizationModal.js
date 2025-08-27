@@ -97,6 +97,62 @@ export const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editing
         });
     };
 
+    // New handler for Dinner Delight quantity options
+    const handleDinnerDelightQuantityChange = (groupTitle, optionName, newQuantity, limit) => {
+        setOptions(prev => {
+            const newOptions = { ...prev };
+            let group = [...(newOptions[groupTitle] || [])];
+            const itemIndex = group.findIndex(i => i.name === optionName);
+            const currentItem = itemIndex > -1 ? group[itemIndex] : null;
+
+            // Calculate total quantity of all items in this group
+            const totalOfOtherItems = group.reduce((sum, item) => (item.name !== optionName ? sum + (item.quantity || 1) : sum), 0);
+
+            if (totalOfOtherItems + newQuantity > limit) {
+                alert(`Anda tidak bisa memilih lebih dari ${limit} item untuk grup ini.`);
+                return prev;
+            }
+
+            if (newQuantity > 0) {
+                if (currentItem) {
+                    group[itemIndex] = { ...currentItem, quantity: newQuantity };
+                } else {
+                    group.push({ name: optionName, quantity: newQuantity });
+                }
+            } else {
+                if (currentItem) {
+                    group = group.filter(i => i.name !== optionName);
+                }
+            }
+
+            newOptions[groupTitle] = group;
+            return newOptions;
+        });
+    };
+
+    // Check if an item needs quantity selector for Dinner Delight
+    const needsQuantitySelector = (itemName, groupTitle, groupType) => {
+        if (item.category !== 'Dinner Delight') return false;
+        
+        // ALL Dinner Delight menus - tropical drinks need quantity
+        if (groupType === 'drink') {
+            return true;
+        }
+        
+        // For Dinner Delight 2C - ramen needs quantity
+        if (item.name === 'Dinner Delight 2C' && groupTitle.toLowerCase().includes('ramen')) {
+            return true;
+        }
+        
+        // For Dinner Delight 4A, 4B, 4C, 4D - takoyaki and ramen need quantity
+        if ((item.name === 'Dinner Delight 4A' || item.name === 'Dinner Delight 4B' || 
+             item.name === 'Dinner Delight 4C' || item.name === 'Dinner Delight 4D')) {
+            return groupTitle.toLowerCase().includes('takoyaki') || groupTitle.toLowerCase().includes('ramen');
+        }
+        
+        return false;
+    };
+
     const calculateTotalPrice = () => {
         let total = item.price;
         let takeawayFee = 0;
@@ -174,7 +230,15 @@ export const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editing
             const packageOptions = customizationOptions[item.category][item.name] || [];
             for (const group of packageOptions) {
                 const currentGroupSelections = options[group.title] || [];
-                const totalQuantityInGroup = currentGroupSelections.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                let totalQuantityInGroup;
+                
+                if (item.category === 'Birthday') {
+                    totalQuantityInGroup = currentGroupSelections.reduce((sum, item) => sum + item.quantity, 0);
+                } else if (item.category === 'Dinner Delight' && needsQuantitySelector(item.name, group.title, group.type)) {
+                    totalQuantityInGroup = currentGroupSelections.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                } else {
+                    totalQuantityInGroup = currentGroupSelections.length;
+                }
                 
                 if (totalQuantityInGroup < group.limit) {
                     alert(`Harap pilih total ${group.limit} item untuk kategori "${group.title}".`);
@@ -314,19 +378,50 @@ export const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editing
             case 'Dinner Delight':
                 const packageOptions = customizationOptions[item.category]?.[item.name];
                 if (!packageOptions) return <p className="text-center text-gray-500">Paket ini tidak memiliki pilihan isian.</p>;
-                return packageOptions.map(group => (
-                    <OptionGroup key={group.title} title={`${group.title} (Pilih ${group.limit})`}>
-                        {group.options.map(optName => (
-                            <OptionBox
-                                key={optName}
-                                name={optName}
-                                selected={(options[group.title] || []).includes(optName)}
-                                onChange={() => handlePackageOptionChange(group.title, optName, group.limit)}
-                                disabled={(options[group.title] || []).length >= group.limit && !(options[group.title] || []).includes(optName)}
-                            />
-                        ))}
-                    </OptionGroup>
-                ));
+                return packageOptions.map(group => {
+                    const needsQuantity = needsQuantitySelector(item.name, group.title, group.type);
+                    const currentGroupSelections = options[group.title] || [];
+                    
+                    if (needsQuantity) {
+                        const totalQuantityInGroup = currentGroupSelections.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                        return (
+                            <OptionGroup key={group.title} title={`${group.title} (Pilih ${group.limit})`}>
+                                <div className="w-full text-right text-sm text-gray-500 mb-2">
+                                    Terpilih: {totalQuantityInGroup} / {group.limit}
+                                </div>
+                                <div className="w-full space-y-2">
+                                {group.options.map(optName => {
+                                    const selectedItem = currentGroupSelections.find(i => i.name === optName);
+                                    const currentQuantity = selectedItem ? selectedItem.quantity : 0;
+                                    return (
+                                        <BirthdayOptionItem
+                                            key={optName}
+                                            name={optName}
+                                            quantity={currentQuantity}
+                                            onQuantityChange={(newQuantity) => handleDinnerDelightQuantityChange(group.title, optName, newQuantity, group.limit)}
+                                            disableAdd={totalQuantityInGroup >= group.limit}
+                                        />
+                                    );
+                                })}
+                                </div>
+                            </OptionGroup>
+                        );
+                    } else {
+                        return (
+                            <OptionGroup key={group.title} title={`${group.title} (Pilih ${group.limit})`}>
+                                {group.options.map(optName => (
+                                    <OptionBox
+                                        key={optName}
+                                        name={optName}
+                                        selected={(options[group.title] || []).includes(optName)}
+                                        onChange={() => handlePackageOptionChange(group.title, optName, group.limit)}
+                                        disabled={(options[group.title] || []).length >= group.limit && !(options[group.title] || []).includes(optName)}
+                                    />
+                                ))}
+                            </OptionGroup>
+                        );
+                    }
+                });
             default:
                 return null;
         }
