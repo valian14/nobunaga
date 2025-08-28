@@ -139,17 +139,17 @@ export const customizationOptions = {
     },
     'Happy Hour': {
         'Happy Hour 1': [
-            { title: 'Fusion Sushi', limit: 1, options: ['Beef Cheese Roll', 'Pizza Roll', 'BBQ Roll'], type: 'food' },
+            { title: 'Fusion Sushi', limit: 1, options: ['Beef Cheese Roll', 'Tuna Spicy Roll', 'BBQ Roll'], type: 'food' },
             { title: 'Dorayaki', limit: 1, options: ['Cheese', 'Milo', 'Coklat'], type: 'snack' },
             { title: 'Minuman', limit: 1, options: ['Mango Squash'], type: 'drink' },
         ],
         'Happy Hour 2': [
-            { title: 'Original Sushi', limit: 1, options: ['Crab', 'Chicken', 'Sosis'], type: 'food' },
+            { title: 'Original Sushi', limit: 1, options: ['Beef', 'Chicken', 'Sosis'], type: 'food' },
             { title: 'Ramen', limit: 1, options: ['Miso', 'Curry', 'Shoyu'], type: 'food' },
             { title: 'Minuman', limit: 1, options: ['Orange Juice'], type: 'drink' },
         ],
         'Happy Hour 3': [
-            { title: 'Takoyaki', limit: 1, options: ['Crab', 'Chicken', 'Sosis'], type: 'food' },
+            { title: 'Takoyaki', limit: 1, options: ['Beef', 'Chicken', 'Sosis'], type: 'food' },
             { title: 'Ramen', limit: 1, options: ['Miso', 'Curry', 'Shoyu'], type: 'food' },
             { title: 'Minuman', limit: 1, options: ['Orange Juice'], type: 'drink' },
         ],
