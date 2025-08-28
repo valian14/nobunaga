@@ -45,6 +45,45 @@ export const customizationOptions = {
             { name: 'Melted Cheese', price: 4000 }, { name: 'Extra Spicy', price: 3000 }
         ],
     },
+    Paket: {
+        'Sweet Couple': {
+            extra: [
+                { name: 'Extra Fried', price: 3000 }, 
+                { name: 'Extra Spicy', price: 3000 }
+            ]
+        },
+        'Spicy Couple': {
+            extra: [
+                { name: 'Extra Fried', price: 3000 }, 
+                { name: 'Extra Spicy', price: 3000 }
+            ]
+        },
+        'Daimyo A': {
+            extra: [
+                { name: 'Extra Fried', price: 3000 }, 
+                { name: 'Extra Spicy', price: 3000 }
+            ]
+        },
+        'Daimyo B': {
+            extra: [
+                { name: 'Extra Fried', price: 3000 }, 
+                { name: 'Extra Spicy', price: 3000 }
+            ]
+        },
+        'Daimyo C': {
+            extra: [
+                { name: 'Extra Fried', price: 3000 }, 
+                { name: 'Extra Spicy', price: 3000 }
+            ]
+        },
+        'Daimyo D': {
+            extra: [
+                { name: 'Extra Fried', price: 3000 }, 
+                { name: 'Extra Spicy', price: 3000 }
+            ]
+        }
+        // Mentai Dimsum, Dimsum Yaki, Gyoza Mentai tidak ada extra (sesuai permintaan)
+    },
     Birthday: {
         'Rokuon Set': [
             { title: 'Fusion Sushi', limit: 3, options: ['Beef Cheese Roll', 'Tuna Spicy Roll', 'Pizza Roll', 'BBQ Roll', 'California Roll', 'Ebi Tempura Roll', 'California Spicy Roll', 'Ocean Roll'] },

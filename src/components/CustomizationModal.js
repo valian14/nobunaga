@@ -259,6 +259,12 @@ export const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editing
         onClose();
     };
 
+    // Helper function to check if item has package extra options
+    const hasPackageExtraOptions = (itemName) => {
+        const packageExtraItems = ['Sweet Couple', 'Spicy Couple', 'Daimyo A', 'Daimyo B', 'Daimyo C', 'Daimyo D'];
+        return packageExtraItems.includes(itemName);
+    };
+
     const renderOptions = () => {
         switch (item.category) {
             case 'Ramen':
@@ -345,6 +351,27 @@ export const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editing
                         </OptionGroup>
                     </>
                 );
+            case 'Paket':
+                // Handle package extra options for specific items
+                if (hasPackageExtraOptions(item.name)) {
+                    const packageExtraOptions = customizationOptions.Paket[item.name];
+                    if (packageExtraOptions && packageExtraOptions.extra) {
+                        return (
+                            <OptionGroup title="Extra">
+                                {packageExtraOptions.extra.map(opt => (
+                                    <OptionBox 
+                                        key={opt.name} 
+                                        name={opt.name} 
+                                        price={opt.price} 
+                                        selected={options.extra?.some(e => e.name === opt.name)} 
+                                        onChange={() => handleOptionChange('extra', opt.name, opt.price, true)} 
+                                    />
+                                ))}
+                            </OptionGroup>
+                        );
+                    }
+                }
+                return null;
             case 'Birthday':
                 const birthdayOptions = customizationOptions[item.category]?.[item.name];
                 if (!birthdayOptions) return null;
