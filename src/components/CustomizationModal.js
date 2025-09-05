@@ -144,9 +144,14 @@ export const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editing
             return true;
         }
         
-        // For Dinner Delight 4A, 4B, 4C, 4D - takoyaki and ramen need quantity
+        // For Dinner Delight 2D and 4D - ALL items need quantity
+        if (item.name === 'Dinner Delight 2D' || item.name === 'Dinner Delight 4D') {
+            return true;
+        }
+        
+        // For Dinner Delight 4A, 4B, 4C - takoyaki and ramen need quantity
         if ((item.name === 'Dinner Delight 4A' || item.name === 'Dinner Delight 4B' || 
-             item.name === 'Dinner Delight 4C' || item.name === 'Dinner Delight 4D')) {
+             item.name === 'Dinner Delight 4C')) {
             return groupTitle.toLowerCase().includes('takoyaki') || groupTitle.toLowerCase().includes('ramen');
         }
         
@@ -402,39 +407,12 @@ export const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editing
                     );
                 });
             case 'Happy Hour':
-            case 'Dinner Delight':
-                const packageOptions = customizationOptions[item.category]?.[item.name];
-                if (!packageOptions) return <p className="text-center text-gray-500">Paket ini tidak memiliki pilihan isian.</p>;
-                return packageOptions.map(group => {
-                    const needsQuantity = needsQuantitySelector(item.name, group.title, group.type);
-                    const currentGroupSelections = options[group.title] || [];
-                    
-                    if (needsQuantity) {
-                        const totalQuantityInGroup = currentGroupSelections.reduce((sum, item) => sum + (item.quantity || 1), 0);
-                        return (
-                            <OptionGroup key={group.title} title={`${group.title} (Pilih ${group.limit})`}>
-                                <div className="w-full text-right text-sm text-gray-500 mb-2">
-                                    Terpilih: {totalQuantityInGroup} / {group.limit}
-                                </div>
-                                <div className="w-full space-y-2">
-                                {group.options.map(optName => {
-                                    const selectedItem = currentGroupSelections.find(i => i.name === optName);
-                                    const currentQuantity = selectedItem ? selectedItem.quantity : 0;
-                                    return (
-                                        <BirthdayOptionItem
-                                            key={optName}
-                                            name={optName}
-                                            quantity={currentQuantity}
-                                            onQuantityChange={(newQuantity) => handleDinnerDelightQuantityChange(group.title, optName, newQuantity, group.limit)}
-                                            disableAdd={totalQuantityInGroup >= group.limit}
-                                        />
-                                    );
-                                })}
-                                </div>
-                            </OptionGroup>
-                        );
-                    } else {
-                        return (
+                const happyHourOptions = customizationOptions[item.category]?.[item.name];
+                if (!happyHourOptions) return <p className="text-center text-gray-500">Paket ini tidak memiliki pilihan isian.</p>;
+                
+                return (
+                    <>
+                        {happyHourOptions.map(group => (
                             <OptionGroup key={group.title} title={`${group.title} (Pilih ${group.limit})`}>
                                 {group.options.map(optName => (
                                     <OptionBox
@@ -446,9 +424,141 @@ export const CustomizationModal = ({ item, isOpen, onClose, onAddToCart, editing
                                     />
                                 ))}
                             </OptionGroup>
-                        );
-                    }
-                });
+                        ))}
+                        {/* Render extra and level options for selected items */}
+                        {happyHourOptions.map(group => {
+                            const selectedItems = options[group.title] || [];
+                            
+                            // Only render extra options if items are selected and group has extra
+                            if (selectedItems.length > 0 && group.extra) {
+                                return (
+                                    <OptionGroup key={`${group.title}-extras`} title={`${group.title} - Extra`}>
+                                        {group.extra.map(extraOpt => (
+                                            <OptionBox 
+                                                key={extraOpt.name}
+                                                name={extraOpt.name} 
+                                                price={extraOpt.price}
+                                                selected={options[`${group.title}_extra`]?.some(e => e.name === extraOpt.name)}
+                                                onChange={() => handleOptionChange(`${group.title}_extra`, extraOpt.name, extraOpt.price, true)}
+                                            />
+                                        ))}
+                                    </OptionGroup>
+                                );
+                            }
+                            
+                            // Only render level options if items are selected and group has level
+                            if (selectedItems.length > 0 && group.level) {
+                                return (
+                                    <OptionGroup key={`${group.title}-level`} title={`${group.title} - Level Pedas`}>
+                                        {group.level.map(levelOpt => (
+                                            <OptionBox 
+                                                key={levelOpt.name}
+                                                name={levelOpt.name} 
+                                                price={levelOpt.price}
+                                                selected={options[`${group.title}_level`]?.name === levelOpt.name}
+                                                onChange={() => handleOptionChange(`${group.title}_level`, levelOpt.name, levelOpt.price)}
+                                            />
+                                        ))}
+                                    </OptionGroup>
+                                );
+                            }
+                            
+                            return null;
+                        })}
+                    </>
+                );
+            case 'Dinner Delight':
+                const packageOptions = customizationOptions[item.category]?.[item.name];
+                if (!packageOptions) return <p className="text-center text-gray-500">Paket ini tidak memiliki pilihan isian.</p>;
+                
+                return (
+                    <>
+                        {packageOptions.map(group => {
+                            const needsQuantity = needsQuantitySelector(item.name, group.title, group.type);
+                            const currentGroupSelections = options[group.title] || [];
+                            
+                            if (needsQuantity) {
+                                const totalQuantityInGroup = currentGroupSelections.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                                return (
+                                    <OptionGroup key={group.title} title={`${group.title} (Pilih ${group.limit})`}>
+                                        <div className="w-full text-right text-sm text-gray-500 mb-2">
+                                            Terpilih: {totalQuantityInGroup} / {group.limit}
+                                        </div>
+                                        <div className="w-full space-y-2">
+                                        {group.options.map(optName => {
+                                            const selectedItem = currentGroupSelections.find(i => i.name === optName);
+                                            const currentQuantity = selectedItem ? selectedItem.quantity : 0;
+                                            return (
+                                                <BirthdayOptionItem
+                                                    key={optName}
+                                                    name={optName}
+                                                    quantity={currentQuantity}
+                                                    onQuantityChange={(newQuantity) => handleDinnerDelightQuantityChange(group.title, optName, newQuantity, group.limit)}
+                                                    disableAdd={totalQuantityInGroup >= group.limit}
+                                                />
+                                            );
+                                        })}
+                                        </div>
+                                    </OptionGroup>
+                                );
+                            } else {
+                                return (
+                                    <OptionGroup key={group.title} title={`${group.title} (Pilih ${group.limit})`}>
+                                        {group.options.map(optName => (
+                                            <OptionBox
+                                                key={optName}
+                                                name={optName}
+                                                selected={(options[group.title] || []).includes(optName)}
+                                                onChange={() => handlePackageOptionChange(group.title, optName, group.limit)}
+                                                disabled={(options[group.title] || []).length >= group.limit && !(options[group.title] || []).includes(optName)}
+                                            />
+                                        ))}
+                                    </OptionGroup>
+                                );
+                            }
+                        })}
+                        {/* Render extra and level options for selected items */}
+                        {packageOptions.map(group => {
+                            const selectedItems = options[group.title] || [];
+                            
+                            // Only render extra options if items are selected and group has extra
+                            if (selectedItems.length > 0 && group.extra) {
+                                return (
+                                    <OptionGroup key={`${group.title}-extras`} title={`${group.title} - Extra`}>
+                                        {group.extra.map(extraOpt => (
+                                            <OptionBox 
+                                                key={extraOpt.name}
+                                                name={extraOpt.name} 
+                                                price={extraOpt.price}
+                                                selected={options[`${group.title}_extra`]?.some(e => e.name === extraOpt.name)}
+                                                onChange={() => handleOptionChange(`${group.title}_extra`, extraOpt.name, extraOpt.price, true)}
+                                            />
+                                        ))}
+                                    </OptionGroup>
+                                );
+                            }
+                            
+                            // Only render level options if items are selected and group has level
+                            if (selectedItems.length > 0 && group.level) {
+                                return (
+                                    <OptionGroup key={`${group.title}-level`} title={`${group.title} - Level Pedas`}>
+                                        {group.level.map(levelOpt => (
+                                            <OptionBox 
+                                                key={levelOpt.name}
+                                                name={levelOpt.name} 
+                                                price={levelOpt.price}
+                                                selected={options[`${group.title}_level`]?.name === levelOpt.name}
+                                                onChange={() => handleOptionChange(`${group.title}_level`, levelOpt.name, levelOpt.price)}
+                                            />
+                                        ))}
+                                    </OptionGroup>
+                                );
+                            }
+                            
+                            return null;
+                        })}
+                    </>
+                );
             default:
                 return null;
         }

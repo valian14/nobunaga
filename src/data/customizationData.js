@@ -144,17 +144,65 @@ export const customizationOptions = {
             { title: 'Minuman', limit: 1, options: ['Mango Squash'], type: 'drink' },
         ],
         'Happy Hour 2': [
-            { title: 'Original Sushi', limit: 1, options: ['Beef', 'Chicken', 'Sosis'], type: 'food' },
-            { title: 'Ramen', limit: 1, options: ['Miso', 'Curry', 'Shoyu'], type: 'food' },
+            { 
+                title: 'Original Sushi', 
+                limit: 1, 
+                options: ['Beef', 'Chicken', 'Sosis'], 
+                type: 'food',
+                extra: [
+                    { name: 'Fried', price: 3000 }, 
+                    { name: 'Spicy', price: 3000 }
+                ]
+            },
+            { 
+                title: 'Ramen', 
+                limit: 1, 
+                options: ['Miso', 'Curry', 'Shoyu'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
             { title: 'Minuman', limit: 1, options: ['Orange Juice'], type: 'drink' },
         ],
         'Happy Hour 3': [
-            { title: 'Takoyaki', limit: 1, options: ['Beef', 'Chicken', 'Sosis'], type: 'food' },
-            { title: 'Ramen', limit: 1, options: ['Miso', 'Curry', 'Shoyu'], type: 'food' },
+            { 
+                title: 'Takoyaki', 
+                limit: 1, 
+                options: ['Beef', 'Chicken', 'Sosis'], 
+                type: 'food',
+                extra: [
+                    { name: 'Cheese', price: 2000 },
+                    { name: 'Spicy', price: 2000 }
+                ]
+            },
+            { 
+                title: 'Ramen', 
+                limit: 1, 
+                options: ['Miso', 'Curry', 'Shoyu'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
             { title: 'Minuman', limit: 1, options: ['Orange Juice'], type: 'drink' },
         ],
         'Happy Hour 4': [
-            { title: 'Main Course', limit: 1, options: ['Chicken Curry Rice'], type: 'food' },
+            { 
+                title: 'Main Course', 
+                limit: 1, 
+                options: ['Chicken Curry Rice'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
             { title: 'Dorayaki', limit: 1, options: ['Cheese', 'Milo', 'Coklat'], type: 'snack' },
             { title: 'Minuman', limit: 1, options: ['Lychee Jell'], type: 'drink' },
         ],
@@ -162,50 +210,241 @@ export const customizationOptions = {
     'Dinner Delight': {
         'Dinner Delight 2A': [
             { title: 'Fusion Sushi', limit: 1, options: ['BBQ Roll', 'Beef Cheese Roll', 'Tuna Spicy Roll'], type: 'food' },
-            { title: 'Takoyaki', limit: 1, options: ['Sosis', 'Chicken', 'Beef'], type: 'food' },
-            { title: 'Ramen', limit: 1, options: ['Miso', 'Curry', 'Shoyu'], type: 'food' },
+            { 
+                title: 'Takoyaki', 
+                limit: 1, 
+                options: ['Sosis', 'Chicken', 'Beef'], 
+                type: 'food',
+                extra: [
+                    { name: 'Cheese', price: 2000 },
+                    { name: 'Spicy', price: 2000 }
+                ]
+            },
+            { 
+                title: 'Ramen', 
+                limit: 1, 
+                options: ['Miso', 'Curry', 'Shoyu'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
             { title: 'Tropikal Drink', limit: 2, options: ['Orange Juice', 'Sparkling Moca', 'Mango Squash', 'Lychee Jell'], type: 'drink' },
         ],
         'Dinner Delight 2B': [
-            { title: 'Main Course', limit: 1, options: ['Chicken Curry Rice'], type: 'food' },
-            { title: 'Takoyaki', limit: 1, options: ['Sosis', 'Chicken', 'Beef'], type: 'food' },
-            { title: 'Ramen', limit: 1, options: ['Miso', 'Curry', 'Shoyu'], type: 'food' },
+            { 
+                title: 'Main Course', 
+                limit: 1, 
+                options: ['Chicken Curry Rice'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
+            { 
+                title: 'Takoyaki', 
+                limit: 1, 
+                options: ['Sosis', 'Chicken', 'Beef'], 
+                type: 'food',
+                extra: [
+                    { name: 'Cheese', price: 2000 },
+                    { name: 'Spicy', price: 2000 }
+                ]
+            },
+            { 
+                title: 'Ramen', 
+                limit: 1, 
+                options: ['Miso', 'Curry', 'Shoyu'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
             { title: 'Tropikal Drink', limit: 2, options: ['Orange Juice', 'Sparkling Moca', 'Mango Squash', 'Lychee Jell'], type: 'drink' },
         ],
         'Dinner Delight 2C': [
-            { title: 'Ramen', limit: 2, options: ['Miso', 'Curry', 'Shoyu'], type: 'food' },
-            { title: 'Takoyaki', limit: 1, options: ['Sosis', 'Chicken', 'Beef'], type: 'food' },
+            { 
+                title: 'Ramen', 
+                limit: 2, 
+                options: ['Miso', 'Curry', 'Shoyu'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
+            { 
+                title: 'Takoyaki', 
+                limit: 1, 
+                options: ['Sosis', 'Chicken', 'Beef'], 
+                type: 'food',
+                extra: [
+                    { name: 'Cheese', price: 2000 },
+                    { name: 'Spicy', price: 2000 }
+                ]
+            },
             { title: 'Tropikal Drink', limit: 2, options: ['Orange Juice', 'Sparkling Moca', 'Mango Squash', 'Lychee Jell'], type: 'drink' },
         ],
         'Dinner Delight 2D': [
-            { title: 'Main Course', limit: 2, options: ['Chicken Curry Rice'], type: 'food' },
-            { title: 'Takoyaki', limit: 1, options: ['Sosis', 'Chicken', 'Beef'], type: 'food' },
+            { 
+                title: 'Main Course', 
+                limit: 2, 
+                options: ['Chicken Curry Rice'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
+            { 
+                title: 'Takoyaki', 
+                limit: 1, 
+                options: ['Sosis', 'Chicken', 'Beef'], 
+                type: 'food',
+                extra: [
+                    { name: 'Cheese', price: 2000 },
+                    { name: 'Spicy', price: 2000 }
+                ]
+            },
             { title: 'Tropikal Drink', limit: 2, options: ['Orange Juice', 'Sparkling Moca', 'Mango Squash', 'Lychee Jell'], type: 'drink' },
         ],
         'Dinner Delight 4A': [
             { title: 'Paket Couple', limit: 1, options: ['Spicy Couple'], type: 'package' },
-            { title: 'Takoyaki', limit: 2, options: ['Sosis', 'Chicken', 'Beef'], type: 'food' },
-            { title: 'Ramen', limit: 2, options: ['Miso', 'Curry', 'Shoyu'], type: 'food' },
+            { 
+                title: 'Takoyaki', 
+                limit: 2, 
+                options: ['Sosis', 'Chicken', 'Beef'], 
+                type: 'food',
+                extra: [
+                    { name: 'Cheese', price: 2000 },
+                    { name: 'Spicy', price: 2000 }
+                ]
+            },
+            { 
+                title: 'Ramen', 
+                limit: 2, 
+                options: ['Miso', 'Curry', 'Shoyu'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
             { title: 'Tropikal Drink', limit: 2, options: ['Orange Juice', 'Sparkling Moca', 'Mango Squash', 'Lychee Jell'], type: 'drink' },
         ],
         'Dinner Delight 4B': [
             { title: 'Paket Couple', limit: 1, options: ['Sweet Couple'], type: 'package' },
-            { title: 'Takoyaki', limit: 2, options: ['Sosis', 'Chicken', 'Beef'], type: 'food' },
-            { title: 'Ramen', limit: 2, options: ['Miso', 'Curry', 'Shoyu'], type: 'food' },
+            { 
+                title: 'Takoyaki', 
+                limit: 2, 
+                options: ['Sosis', 'Chicken', 'Beef'], 
+                type: 'food',
+                extra: [
+                    { name: 'Cheese', price: 2000 },
+                    { name: 'Spicy', price: 2000 }
+                ]
+            },
+            { 
+                title: 'Ramen', 
+                limit: 2, 
+                options: ['Miso', 'Curry', 'Shoyu'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
             { title: 'Tropikal Drink', limit: 2, options: ['Orange Juice', 'Sparkling Moca', 'Mango Squash', 'Lychee Jell'], type: 'drink' },
         ],
         'Dinner Delight 4C': [
             { title: 'Fusion Sushi', limit: 1, options: ['BBQ Roll', 'Beef Cheese Roll', 'Tuna Spicy Roll'], type: 'food' },
-            { title: 'Original Sushi', limit: 1, options: ['Beef', 'Chicken', 'Sosis'], type: 'food' },
-            { title: 'Takoyaki', limit: 2, options: ['Beef', 'Cheese', 'Sosis'], type: 'food' },
-            { title: 'Ramen', limit: 1, options: ['Miso', 'Curry', 'Shoyu'], type: 'food' },
-            { title: 'Main Course', limit: 1, options: ['Chicken Curry Rice'], type: 'food' },
+            { 
+                title: 'Original Sushi', 
+                limit: 1, 
+                options: ['Beef', 'Chicken', 'Sosis'], 
+                type: 'food',
+                extra: [
+                    { name: 'Fried', price: 3000 },
+                    { name: 'Spicy', price: 3000 }
+                ]
+            },
+            { 
+                title: 'Takoyaki', 
+                limit: 2, 
+                options: ['Beef', 'Cheese', 'Sosis'], 
+                type: 'food',
+                extra: [
+                    { name: 'Cheese', price: 2000 },
+                    { name: 'Spicy', price: 2000 }
+                ]
+            },
+            { 
+                title: 'Ramen', 
+                limit: 1, 
+                options: ['Miso', 'Curry', 'Shoyu'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
+            { 
+                title: 'Main Course', 
+                limit: 1, 
+                options: ['Chicken Curry Rice'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
             { title: 'Tropikal Drink', limit: 4, options: ['Orange Juice', 'Sparkling Moca', 'Mango Squash', 'Lychee Jell'], type: 'drink' },
         ],
         'Dinner Delight 4D': [
-            { title: 'Main Course', limit: 2, options: ['Chicken Curry Rice'], type: 'food' },
-            { title: 'Takoyaki', limit: 2, options: ['Beef', 'Chicken', 'Sosis'], type: 'food' },
-            { title: 'Ramen', limit: 2, options: ['Miso', 'Curry', 'Shoyu'], type: 'food' },
+            { 
+                title: 'Main Course', 
+                limit: 2, 
+                options: ['Chicken Curry Rice'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
+            { 
+                title: 'Takoyaki', 
+                limit: 2, 
+                options: ['Beef', 'Chicken', 'Sosis'], 
+                type: 'food',
+                extra: [
+                    { name: 'Cheese', price: 2000 },
+                    { name: 'Spicy', price: 2000 }
+                ]
+            },
+            { 
+                title: 'Ramen', 
+                limit: 2, 
+                options: ['Miso', 'Curry', 'Shoyu'], 
+                type: 'food',
+                level: [
+                    { name: 'Level 1', price: 1000 }, 
+                    { name: 'Level 2', price: 2000 }, 
+                    { name: 'Level 3', price: 3000 }
+                ]
+            },
             { title: 'Tropikal Drink', limit: 4, options: ['Orange Juice', 'Sparkling Moca', 'Mango Squash', 'Lychee Jell'], type: 'drink' },
         ],
     }
